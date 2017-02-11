@@ -1,2 +1,2 @@
 # friendly-octo-succotash
-ICPC, algorithm implementations, etc.
+ICPC, algorithm and data structure implementations, etc.

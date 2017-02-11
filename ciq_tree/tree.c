@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <limits.h>
 #include <stdbool.h>
 
 typedef struct node{
@@ -11,10 +10,16 @@ typedef struct node{
     struct node **children;
 } node;
 
-typedef struct maxMatchTuple{
+typedef struct maxLL{
     int max;
-    bool match;
-} maxMathTuple;
+    struct node** children;
+    struct maxLL* next;
+} maxLL;
+
+typedef struct boolMaxTuple{
+    int max;
+    bool found;
+} boolMaxTuple;
 
 // Traverse from the root, eliminating double-pairings so that we end up with a list of children, not pairs
 void sepParChild(node* source, node* new){
@@ -31,6 +36,17 @@ void sepParChild(node* source, node* new){
     }
 }
 
+boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
+    int i = 0;
+    while(toCheck->children[i]){
+        if(toCheck->children[i] == b){
+            if(toCheck->children[i]->n > toCheck->max)
+                toCheck->max = toCheck->children[i]->n;
+        }
+        ++i;
+    }
+}
+
 void add(node* n, int val){
     n->n += val;
     for(int i = 0; i <= n->numChildren; ++i){
@@ -40,14 +56,16 @@ void add(node* n, int val){
     }
 }
 
-/* maxMatchTuple checkTrack(*node */
-int max_node(node* a, node* b){
+int max_node(node* a, node* b, int numNodes){
     int currMax = a->n;
 
-    // First, breadth-first traversal of children
-    for(int i = 0; i < a->numChildren; ++i){
+    // First, breadth-first traversal of children of a
+    // Array of structs that contain linked-list of node path and max along path
+    maxLL* toCheck = malloc(sizeof(maxLL));
+    toCheck->children = a->children;
+    maxTraverseChildren(toCheck,b);
 
-    }
+    free(toCheck);
     return currMax;
 }
 
@@ -97,7 +115,7 @@ int main(){
             /* printf("%d",node_arr[4].n); */
         }
         else{
-            max_node(&node_arr[arg1-1],&node_arr[arg2-1]);
+            max_node(&node_arr[arg1-1],&node_arr[arg2-1],numNodes);
         }
     }
 
