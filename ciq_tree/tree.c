@@ -6,6 +6,7 @@
 
 typedef struct node{
     int n;
+    int id;
     int numChildren;
     struct node *parent;
     struct node **children;
@@ -15,6 +16,7 @@ typedef struct maxLL{
     int max;
     struct node *node;
     struct maxLL* next;
+    node* source;
 } maxLL;
 
 typedef struct boolMaxTuple{
@@ -67,25 +69,25 @@ void printCurrentQueue(maxLL* toCheck){
     }
     else{
         while(toCheck->next){
-            printf("%p  %d\n",toCheck->next,toCheck->max);
+            printf("NEXT NODE: %d  max: %d\n",toCheck->next->node->id,toCheck->max);
             toCheck = toCheck->next;
         }
     }
 }
 
 // If source pointer is non-null, we know we've sent parent node in maxLL
-boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b, node* source){
+boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
     boolMaxTuple ret = { .found = false, .max = INT_MIN };
     maxLL* last = toCheck;
     int newMax;
     do{
-        int sLower = source ? 1 : 0;
-        printf("about to traverse %d children\n",toCheck->node->numChildren-sLower);
+        int sLower = toCheck->source ? 1 : 0;
+        printf("at %d, about to traverse %d children\n",toCheck->node->id,toCheck->node->numChildren-sLower);
         for(int i=0,childrenFound=0; childrenFound < toCheck->node->numChildren - sLower; ++i){
-            if((toCheck->node->children[i] && toCheck->node->children[i] != source)
-                    || (toCheck->node->children[i] && !source)){
+            if((toCheck->node->children[i] && toCheck->node->children[i] != toCheck->source)
+                    || (toCheck->node->children[i] && !toCheck->source)){
                 ++childrenFound;
-                printf("found child of %p, %p\n",toCheck->node, toCheck->node->children[i]);
+                /* printf("found child of %d, %d\n",toCheck->node->id, toCheck->node->children[i]->id); */
                 newMax = toCheck->node->children[i]->n >= toCheck->max ? toCheck->node->children[i]->n : toCheck->max;
                 if(toCheck->node->children[i] == b){
                     ret.max = newMax;
@@ -94,9 +96,8 @@ boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b, node* source){
                 }
                 else if(toCheck->node->children[i]->children){
                     last = addToQueue(last,toCheck->node->children[i],newMax);
-                    source = NULL;
-                    /* printf("current queue: \n"); */
-                    /* printCurrentQueue(toCheck); */
+                    printf("current queue: \n");
+                    printCurrentQueue(toCheck);
                 }
              }
         }
@@ -129,31 +130,36 @@ void add(node* n, int val){
     }
 }
 
-int max_node(node* a, node* b){
+int maxNode(node* a, node* b){
     // First, breadth-first traversal of children of a
     // Linked-list that contains max along path and node
+    if(a == b)
+        return a->n;
+
     maxLL* toCheck = malloc(sizeof(maxLL));
     maxLL* first = toCheck;
-    node* source;
     toCheck->node = a;
     toCheck->max = a->n;
-    boolMaxTuple result = maxTraverseChildren(toCheck,b,NULL);
+    toCheck->source = NULL;
+    boolMaxTuple result = maxTraverseChildren(toCheck,b);
     if(result.found){
         return result.max;
     }
     printf("child traversal finished\n");
 
     do{
-        printf("parent: %p\n",toCheck->node->parent);
+        printf("parent we're about to go to: %d\n",toCheck->node->parent->id);
         int newMax = toCheck->node->n >= toCheck->node->parent->n ? toCheck->node->n : toCheck->node->parent->n;
-        if(toCheck->node->parent == b)
+        if(toCheck->node->parent == b){
+            printf("found!!");
             return newMax;
-        source = toCheck->node;
-        printf("toCheck node : %p   ",toCheck->node);
+        }
+        printf("toCheck node : %d   ",toCheck->node->id);
         toCheck = addToQueue(toCheck,toCheck->node->parent,newMax);
-        printf("toCheck node: %p",toCheck->node);
+        toCheck->source = toCheck->node;
+        printf("toCheck node: %d",toCheck->node->id);
         printf("\n");
-        result = maxTraverseChildren(toCheck,b,source);
+        result = maxTraverseChildren(toCheck,b);
         if(result.found){
             printf("found!!\n");
             return result.max;
@@ -172,6 +178,7 @@ int main(){
     // Node id will be index + 1
     for(int i = 0; i < numNodes; ++i){
         node_arr[i].n = 0;
+        node_arr[i].id = i+1;
         node_arr[i].numChildren= 0;
         node_arr[i].children = malloc((numNodes-1)*sizeof(node_arr[i]));
         node_arr[i].parent = calloc(1,sizeof(node_arr[i]));
@@ -190,14 +197,14 @@ int main(){
     sepParChild(NULL,&node_arr[0]);
     node_arr[0].parent=NULL;
 
-    for(int i = 0; i < numNodes; ++i){
-        printf("%d:  %p  ",i,&node_arr[i]);
-    }
-    printf("\n");
-    for(int i = 0; i < numNodes; ++i){
-        printf("%d: %p  ",i,node_arr[i].parent);
-    }
-    printf("\n");
+    /* for(int i = 0; i < numNodes; ++i){ */
+    /*     printf("%d:  %p  ",i,&node_arr[i]); */
+    /* } */
+    /* printf("\n"); */
+    /* for(int i = 0; i < numNodes; ++i){ */
+    /*     printf("%d: %p  ",i,node_arr[i].parent); */
+    /* } */
+    /* printf("\n"); */
 
     int numQueries, arg1, arg2;
     scanf("%d",&numQueries);
@@ -209,7 +216,7 @@ int main(){
             add(&node_arr[arg1-1],arg2);
         }
         else{
-            printf("%d\n",max_node(&node_arr[arg1-1],&node_arr[arg2-1]));
+            printf("%d\n",maxNode(&node_arr[arg1-1],&node_arr[arg2-1]));
         }
     }
 
