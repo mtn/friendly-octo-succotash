@@ -14,9 +14,10 @@ typedef struct node{
 
 typedef struct maxLL{
     int max;
-    struct node *node;
+    node* node;
     struct maxLL* next;
     node* source;
+    bool fromParent;
 } maxLL;
 
 typedef struct boolMaxTuple{
@@ -40,7 +41,7 @@ void sepParChild(node* source, node* new){
 }
 
 // Add to end of linked-list queue
-maxLL* addToQueue(maxLL* last, node* child, int newMax){
+maxLL* addToQueue(maxLL* last, node* node, int newMax){
     maxLL* next = malloc(sizeof(maxLL));
     // If allocation fails, we might miss the node
     if(next == NULL){
@@ -59,21 +60,19 @@ maxLL* addToQueue(maxLL* last, node* child, int newMax){
         last->next = next;
     }
     last->next->max = newMax;
-    last->next->node = child;
+    last->next->node = node;
     return last->next;
 }
 
 // Handles traversal, ignoring source node if we've traversed upwards
-boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
+boolMaxTuple maxTraverse(maxLL* toCheck, node* b){
     boolMaxTuple ret = { .found = false, .max = toCheck->max };
     maxLL* last = toCheck;
+    node* source;
     int newMax;
     do{
-        int sLower = toCheck->source ? 1 : 0;
-        for(int i=0,childrenFound=0; childrenFound < toCheck->node->numChildren - sLower; ++i){
-            sLower = toCheck->source ? 1 : 0;
-            if((toCheck->node->children[i] && toCheck->node->children[i] != toCheck->source)
-                    || (toCheck->node->children[i] && !toCheck->source)){
+        for(int i=0,childrenFound=0; childrenFound < toCheck->node->numChildren - (int)toCheck->fromParent; ++i){
+            if((toCheck->node->children[i] && toCheck->node->children[i] != toCheck->source)){
                 ++childrenFound;
                 newMax = toCheck->node->children[i]->n >= toCheck->max ? toCheck->node->children[i]->n : toCheck->max;
                 if(toCheck->node->children[i] == b){
@@ -83,12 +82,25 @@ boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
                 }
                 else if(toCheck->node->children[i]->children){
                     last = addToQueue(last,toCheck->node->children[i],newMax);
+                    last->fromParent = false;
+                    last->source = toCheck->node;
                 }
              }
         }
-        if(toCheck->next){
-            toCheck = toCheck->next;
+        if(toCheck->node->parent && toCheck->node->parent != toCheck->source){
+            newMax = toCheck->node->parent->n >= toCheck->max ? toCheck->node->parent->n : toCheck->max;
+            if (toCheck->node->parent == b){
+                ret.max = newMax;
+                ret.found = true;
+                return ret;
+            }
+            last = addToQueue(last,toCheck->node->parent,newMax);
+            last->fromParent = true;
+            last->source = toCheck->node;
         }
+
+        if(toCheck->next)
+            toCheck = toCheck->next;
         else
             toCheck = NULL;
     }while(toCheck);
@@ -125,31 +137,15 @@ int maxNode(node* a, node* b){
 
     maxLL* toCheck = malloc(sizeof(maxLL));
     maxLL* first = toCheck;
-    node* temp;
-    int newMax;
 
     toCheck->node = a;
     toCheck->max = a->n;
     toCheck->next = NULL;
     toCheck->source = NULL;
-    boolMaxTuple result = maxTraverseChildren(toCheck,b);
+    boolMaxTuple result = maxTraverse(toCheck,b);
     if(result.found){
         return result.max;
     }
-
-    do{
-        newMax = toCheck->max >= toCheck->node->parent->n ? toCheck->max : toCheck->node->parent->n;
-        if(toCheck->node->parent == b){
-            return newMax;
-        }
-        temp = toCheck->node;
-        toCheck = addToQueue(toCheck,toCheck->node->parent,newMax);
-        toCheck->source = temp;
-        result = maxTraverseChildren(toCheck,b);
-        if(result.found){
-            return result.max;
-        }
-    }while(toCheck->node->parent);
 
     freeMaxLL(first);
     return INT_MIN;
