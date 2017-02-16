@@ -6,7 +6,6 @@
 
 typedef struct node{
     int n;
-    int id;
     int numChildren;
     struct node *parent;
     struct node **children;
@@ -160,7 +159,6 @@ int main(){
     // Node id will be index + 1
     for(int i = 0; i < numNodes; ++i){
         node_arr[i].n = 0;
-        node_arr[i].id = i+1;
         node_arr[i].numChildren= 0;
         node_arr[i].children = malloc((numNodes-1)*sizeof(node_arr[i]));
         node_arr[i].parent = calloc(1,sizeof(node_arr[i]));
