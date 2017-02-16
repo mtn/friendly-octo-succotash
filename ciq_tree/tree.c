@@ -39,7 +39,7 @@ void sepParChild(node* source, node* new){
     }
 }
 
-// Traverse linked list and add to end of queue
+// Add to end of linked-list queue
 maxLL* addToQueue(maxLL* last, node* child, int newMax){
     maxLL* next = malloc(sizeof(maxLL));
     // If allocation fails, we might miss the node
@@ -63,22 +63,9 @@ maxLL* addToQueue(maxLL* last, node* child, int newMax){
     return last->next;
 }
 
-void printCurrentQueue(maxLL* toCheck){
-    if(toCheck->next == NULL){
-        printf("Nothing more in queue\n");
-        return;
-    }
-    else{
-        while(toCheck->next){
-            printf("NEXT NODE: %d  max: %d\n",toCheck->next->node->id,toCheck->max);
-            toCheck = toCheck->next;
-        }
-    }
-}
-
-// If source pointer is non-null, we know we've sent parent node in maxLL
+// Handles traversal, ignoring source node if we've traversed upwards
 boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
-    boolMaxTuple ret = { .found = false, .max = INT_MIN };
+    boolMaxTuple ret = { .found = false, .max = toCheck->max };
     maxLL* last = toCheck;
     int newMax;
     do{
@@ -96,8 +83,6 @@ boolMaxTuple maxTraverseChildren(maxLL* toCheck, node* b){
                 }
                 else if(toCheck->node->children[i]->children){
                     last = addToQueue(last,toCheck->node->children[i],newMax);
-                    /* printf("current queue: \n"); */
-                    /* printCurrentQueue(toCheck); */
                 }
              }
         }
@@ -141,6 +126,7 @@ int maxNode(node* a, node* b){
     maxLL* toCheck = malloc(sizeof(maxLL));
     maxLL* first = toCheck;
     node* temp;
+    int newMax;
 
     toCheck->node = a;
     toCheck->max = a->n;
@@ -152,7 +138,7 @@ int maxNode(node* a, node* b){
     }
 
     do{
-        int newMax = toCheck->node->n >= toCheck->node->parent->n ? toCheck->node->n : toCheck->node->parent->n;
+        newMax = toCheck->max >= toCheck->node->parent->n ? toCheck->max : toCheck->node->parent->n;
         if(toCheck->node->parent == b){
             return newMax;
         }
@@ -203,12 +189,10 @@ int main(){
     for(int i = 0; i < numQueries; ++i){
         scanf("%s %d %d",&query[0],&arg1,&arg2);
 
-        if(!strcmp("add",query)){
+        if(!strcmp("add",query))
             add(&node_arr[arg1-1],arg2);
-        }
-        else{
+        else
             printf("%d\n",maxNode(&node_arr[arg1-1],&node_arr[arg2-1]));
-        }
     }
 
     free(node_arr);
