@@ -1,0 +1,70 @@
+== 5 Stacks and Queues
+=== 5.1 Abstract Data Types
+
+We refer to implementations of data types whose operations can be performed by users without knowledge of the underlying implementation.
+
+=== 5.2 Stacks
+
+A *stack* is a linear list where items are added and deleted from the same end. This means that stacks exhibit a "last in, first out" property. As an example, consider the following set of numbers:
+
+[source]
+----
+36 15 52 23
+----
+
+If we want to print the following:
+[source]
+----
+23 52 15 36
+----
+
+We would need to construct the following stack:
+[source]
+----
+(top) 23 52 15 36 (bottom)
+----
+
+And we would remove numbers one at a time, printing them as we remove them. In psuedocode:
+[source]
+----
+initialize empty stack S
+read(num)
+while a next number, num was read:
+    push num onto S
+    read(num)
+while S is not empty:
+    num = pop S
+    print num
+----
+
+*5.2.1 Implementing a Stack Using an Array*
+
+Stacks can be implemented with a struct containing an array and an int index of the top of the stack:
+
+[source]
+----
+typedef struct {
+    int top;
+    int ST[MaxStack];
+} StackType, *Stack;
+----
+
+Note that having StackType is useful for allocating a stack (general useful practice). When initialized, we'll set top to -1. Considering a stack variable, `Stack S`, we have access to `top` and the stack array, as we should based on our above definition of ADTs. Declaring a stack variable is therefore pretty simple:
+
+[source]
+----
+Stack initStack(){
+    Stack sp = malloc(sizeof(StackType));
+    sp->top = -1;
+    return sp;
+}
+----
+
+And a user would simply initialize a new stack with `Stack S = initStack()`.
+
+TODO Finish stack section
+
+=== 5.6 Queues
+
+
+
