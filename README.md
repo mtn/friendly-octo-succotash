@@ -1,2 +1,2 @@
 # friendly-octo-succotash
-ICPC, algorithm and data structure implementations, etc.
+A repository housing algorithm and data structure implementations/notes, ICPC, random problems, etc.

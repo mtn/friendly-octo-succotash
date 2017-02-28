@@ -1,5 +1,5 @@
 # notes
-My personal notes from reading books including
+My personal notes from reading books (eventually) including
     * Kalicharan's [Advanced Topics in C](http://www.apress.com/us/book/9781430264002)
     * CLRS [Introduction to Algorithms](https://www.amazon.com/Introduction-Algorithms-3rd-MIT-Press/dp/026203384)
     * Weiss [Data Structures and Algorithms in C++](https://www.amazon.com/Data-Structures-Algorithm-Analysis-C/dp/013284737X)
@@ -17,4 +17,4 @@ Source files are grouped by book and chapter, with each chapter having a `*.adoc
 
     asciidoctor-pdf index.adoc -D ../ -o BOOK_NAME.pdf
 
-within the appropriate source directory.
+within the appropriate source directory. Alternatively (easier), execute ./build.sh within the appropriate source directory
