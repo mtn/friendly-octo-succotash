@@ -1,0 +1,8 @@
+= Notes from a reading of Kalicharan's Advanced C
+:source-highlighter: prettify
+:source-language: c
+:icons: font
+:toc:
+
+include::ch05/ch05.adoc[]
+include::ch11/ch11.adoc[]
