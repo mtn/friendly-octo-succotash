@@ -62,9 +62,125 @@ Stack initStack(){
 
 And a user would simply initialize a new stack with `Stack S = initStack()`.
 
-TODO Finish stack section
+For our stack, we'll require three basic functions `isEmpty`, `pop`, and `push`. `isEmpty`` is simple:
+
+[source]
+----
+bool isEmpty(StackS){
+    return (S->top == -1);
+}
+----
+
+When we push items to the stack (after checking that the stack isn't full), we increment top (this works nicely because we we initialize top as -1) and set ST[top] to point to the item we're adding:
+
+[source]
+----
+void push(Stack S, int n){
+    if(S->top == MaxSize-1){
+        printf("Stack overflow");
+        exit(1);
+    }
+    ++(Stack->top);
+    S->ST[S->top] = n;
+}
+----
+
+To pop off the top of the stack (after checking that the stack isn't empty), we decrement top and return the value we just popped off:
+
+[source]
+----
+int pop(Stack S){
+    if(isEmpty(S)) return RogueVal; // designated value to indicate empty
+    int temp = S->ST[S->top];
+    --(S->top);
+    return temp;
+}
+----
+
+*Implementing a Stack Using a Linked List*
+
+The array implementation is simple and efficient, but doesn't allow for resizing. One implementation that does is a linked list. We add new items to the head of the list, and remove the head when popping. The stack is defined as follows:
+
+[source]
+----
+typedef struct node {
+    int num;
+    struct node *next;
+} Node, *NodePtr;
+
+typedef struct {
+    NodePtr top;
+} StackType, *Stack;
+----
+
+To initialize an new empty stack, we allocate memory for a stack `S` and set `S->top` to null. Checking if a stack is empty simply requires checking `S->top`:
+
+[source]
+----
+bool isEmpty(Stack S){
+    return (S->top == NULL);
+}
+----
+
+Top push an object onto the top of the stack, we allocate memory and set the appropriate values:
+
+[source]
+----
+void push(Stack S, int n){
+    NodePtr np = malloc(sizeof(Node));
+    np->num=n;
+    np->next=S->top;
+    S->top=np;
+}
+----
+
+To pop the top object off the stack (after checking that there is a value to pop), we set `S->top` to the second item on the stack and return the value we are popping off.
+
+[source]
+----
+int pop(Stack S){
+    if(isEmpty(S)) return RogueVal; // Same as above
+    NodePtr tmp = S->top;
+    int temp = S->top->num;
+    S->top = S->top->next;
+    free(tmp);
+    return temp;
+}
+----
+
+Note: 5.3-5.5  omitted from notes
 
 === 5.6 Queues
+
+A queue is a linear list where items are added to one end and removed from the other. The basic operations we want to perform on queues are:
+
+* Adding an item to the queue (enqueue)
+* Taking an item off the queue (dequeue)
+* Checking if a queue is empty
+* Examining the head of the queue
+
+*Implementing a Queue Using an Array*
+
+For implementations that use arrays, we need to know size at the time of allocation. In this discussion, `MaxQ` will be used to indicate this size. The data type is defined as follows:
+
+[source]
+----
+typedef struct{
+    int head,tail;
+    int QA[MaxQ];
+} QType, *Queue;
+----
+
+According to this definition, `head` and `tail` can vary between `0` and `MaxQ-1`. We define the queue initialization function as follows:
+
+[source]
+----
+Queue initQueue(){
+    Queue qp = malloc(sizeof(QType));
+    qp->head = qp->tail = 0;
+    return qp;
+}
+----
 
 
 
