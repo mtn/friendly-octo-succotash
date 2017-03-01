@@ -62,7 +62,7 @@ Stack initStack(){
 
 And a user would simply initialize a new stack with `Stack S = initStack()`.
 
-For our stack, we'll require three basic functions `isEmpty`, `pop`, and `push`. `isEmpty`` is simple:
+For our stack, we'll require three basic functions `isEmpty`, `pop`, and `push`. `isEmpty` is simple:
 
 [source]
 ----
@@ -216,5 +216,85 @@ We first check first check if the queue is empty. If it is not, we increment the
 
 Consider the example sequence that illustrates usage of an array-implemented queue:
 
-TODO add example
+1) We insert the values 5 8 1 9 (where 5 is inserted first). Head is 0, tail is 4 (incremented 1 for each insertion).
+2) We call dequeue, which returns 5. Head is incremented to 1.
+
+*Implementing a Queue Using an Array*
+
+As usual, the advantage of implementing with a linked list is that we don't have to know the size of our structure beforehand. Two pointers point to the first and last nodes in the queue struct (each node contains queue data and a pointer to the next). The typedefs thus look as follows:
+
+[source]
+----
+// Generic implementation of queue data, only holding an int here
+typedef struct{
+    int num;
+} QueueData;
+
+typdef struct node{
+    QueueData data;
+    struct node *next;
+} Node, *NodePtr;
+
+typedef struct{
+    NodePtr head,tail;
+} QueueType, *Queue;
+----
+
+Queue initialization follows from this structure:
+
+[source]
+----
+Queue initQueue(){
+    Queue qp = malloc(sizeof(QueueType));
+    qp->head=NULL;
+    qp->tail=NULL;
+    return qp;
+}
+----
+
+Head and tail are both null in the initially empty queue. To check if a queue is null, we just need to check its head.
+
+[source]
+----
+int empty(Queue Q){
+    return (Q->head == NULL);
+}
+----
+
+To `enqueue` objects, we first allocate space for their node. If the queue is empty, we set the head and tail to the new pointer. Otherwise, we set next pointer in the current tail to the new pointer and then set the new tail:
+
+[source]
+----
+void enqueue(Queue Q, QueueData d){
+    NodePtr np = malloc(sizeof(Node));
+    np->data = d;
+    np->next = NULL;
+    if(isEmpty(Q)){
+        Q->head = np;
+        Q->tail = np;
+    }
+    else{
+        Q->tail->next = np;
+        Q->tail = np;
+    }
+}
+----
+
+When we dequeue, we first check that the queue is not empty. If it isn't, we store the `head` in a temporary variable (for later freeing) and increment `head` to `head->next`. If `head->next` is empty, we know the queue is now empty and set `Q->tail` to NULL. The data within the previous head node, which should be stored as soon as we know the queue isn't empty, is returned.
+
+[source]
+----
+QueueData dequeue(Queue Q){
+    if(isEmpty(Q)){
+        printf("Tried to dequeue from an empty queue");
+        exit(1);
+    }
+    QueueData hold = Q->head->data;
+    NodePtr temp = Q->head;
+    Q->head = Q->head->next;
+    if(Q->head == NULL) Q->tail = NULL;
+    free(temp);
+    return hold;
+}
+----
 

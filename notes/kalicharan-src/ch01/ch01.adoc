@@ -1,2 +1,64 @@
 == 1 Sorting, Searching, and Merging
+
+Note: Only two simple sorting algorithms, selection sort and insertion sort, are covered in this section.
+
 === 1.1. Sorting an Array: Selection Sort
+
+Sorting involves arranging a set of values in ascending/descending order. We often find this desirable because many operations, like searching, can be done much more efficiently on sorted data.
+
+We first consider selection sort. With this sorting method, we maintain separate sorted and unsorted portions of the list. In each iteration, we iterate over the unsorted part, fine the smallest number, and add it to the end of the sorted part. Example:
+
+[source]
+----
+57 48 79 65 15 33 52
+15 48 79 65 57 33 52 // 15 swaps with 57
+15 33 79 54 57 48 52 // 33 swaps with 48
+15 33 48 54 57 79 52 // 48 swaps with 79
+15 33 48 52 57 79 54 // 52 swaps with 54
+15 33 48 52 54 79 57 // 54 swaps with 57
+15 33 48 52 54 57 79 // 79 swaps with 57
+----
+
+After this is complete, the array is completely sorted. Note that for an array of size 6, we made 5 passes. Selection sort passes over the array `n-1` time for an array of size `n`. This is because we need to pass over the full array one full time for each position except the last one, because by the time we reach it there is only one element remaining in the unsorted portion.
+
+An implementation in C would look something like this:
+
+[source]
+----
+void selectionSort(int list[], in lo, int hi){
+// sorts list[lo] to list[hi]
+    for(int h = lo, h < hi; ++h){
+        int s = getSmallest(list,h,hi);
+        swap(list,h,s);
+    }
+}
+----
+
+Where `swap` and `getSmallest` are implemented as follows:
+
+[source]
+----
+int getSmallest(int list[], int lo, int hi){
+// returns index of smallest value
+    int smallest = lo;
+    for(int h = lo; h < hi; ++h)
+        if(list[h] > list[smallest])
+            smallest = h;
+    return smallest;
+}
+
+void swap(int list[], int i, int j){
+    int temp = list[i];
+    list[i] = list[j];
+    list[j] = hold;
+}
+----
+
+*Algorithm analysis: Selection Sort*
+
+The number of comparisons we make decreases by 1 each pass. In the first pass, we make `n-1` comparisons, int he second we make `n-2`, etc. This series sums to `(1/2)(n)(n-1)`, which is on the order of `n^2`. Thus, we say that selection sort is of the order `O(n^2)`. Also, note that selection sort makes the same number of comparisons regardless of the data (so if it's input is already sorted, it makes no difference).
+
+=== 1.2 Sorting an Array: Insertion Sort
+
+Consider the same array as above. We can also sort it by iterating through the array, placing a num in its correct location in our sorted array at each step.
+

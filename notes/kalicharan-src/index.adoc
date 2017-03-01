@@ -4,5 +4,6 @@
 :icons: font
 :toc:
 
+include::ch01/ch01.adoc[]
 include::ch05/ch05.adoc[]
 include::ch11/ch11.adoc[]

@@ -34,9 +34,36 @@ int* insertionSort(int arr[]){
     return arr;
 }
 
-/* int* quickSort(int arr[]){ */
-/*     return arr; */
-/* } */
+int partition(int a[], int lo, int hi){
+   int pivot, i, j, temp;
+   pivot = a[lo];
+   i = lo; j = hi;
+
+   while(i < j){
+        while(a[i] < pivot && hi > i) ++i;
+        while(a[j] > pivot) --j;
+        temp = a[i];
+        a[i] = a[j];
+        a[j] = temp;
+   }
+
+   temp = a[lo];
+   a[lo] = a[j];
+   a[j] = temp;
+   return j;
+}
+
+void quickHelper(int a[], int lo, int hi){
+   if(lo < hi) {
+       int j = partition(a,lo,hi);
+       quickHelper(a,lo,j-1);
+       quickHelper(a,j+1,hi);
+   }
+}
+
+void quickSort(int arr[]){
+    quickHelper(arr,0,99);
+}
 
 void printArr(int* arr){
     printf("[");
@@ -67,8 +94,9 @@ int main(){
     printArr(insertionSort(toSort));
     reset(randArr,toSort);
 
-    /* puts("\nQuicksort:"); */
-    /* printArr(quickSort(toSort)); */
-    /* reset(randArr,toSort); */
+    puts("\nQuicksort:");
+    quickSort(toSort);
+    printArr(toSort);
+    reset(randArr,toSort);
 }
 

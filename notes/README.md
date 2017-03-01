@@ -23,4 +23,4 @@ Alternatively (much easier), execute
 
     ./build.sh
 
-within the appropriate source directory
+within the appropriate source directory. There's also a script to build and render, since it's a bit tiresome to build and then open the pdf which is one directory up for lazy people like me, but annoying to always open the rendered PDF.
