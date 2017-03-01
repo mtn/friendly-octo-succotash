@@ -171,7 +171,7 @@ typedef struct{
 } QType, *Queue;
 ----
 
-According to this definition, `head` and `tail` can vary between `0` and `MaxQ-1`. We define the queue initialization function as follows:
+According to this definition, `head` and `tail` can vary between `0` and `MaxQ-1` (note that here, we are not filling index 0). We define the queue initialization function as follows:
 
 [source]
 ----
@@ -182,5 +182,39 @@ Queue initQueue(){
 }
 ----
 
+We add things to the queue at the tail, incrementing tail and placing the object at the tail index. When implementing queues as arrays, the head will point "just in front" of the actual head, while the tail points directly to the last element. We enqueue as follows:
 
+[source]
+----
+void enqueue(Queue Q, int n){
+    if(Q->tail == MaxQ-1) Q->tail = 0;
+    else ++(Q->tail);
+    if(Q->tail == Q->head){
+        printf("\nQueue is full\n");
+        exit(1);
+    }
+    Q->QA[A->tail] = n;
+}
+----
+
+Tail is either incremented, or set to 0 (so we can recognize the queue as full). If the queue is not full, the value is set at the new tail. Now, we consider dequeue:
+
+[source]
+----
+int dequeue(Queue Q){
+    if(isEmpty(Q)){
+        printf("Attempted to remove from an empty queue\n");
+        exit(1);
+    }
+    if(Q->head == MaxQ - 1) Q->head = 0;
+    else ++(Q->head);
+    return Q->QA[Q->head];
+}
+----
+
+We first check first check if the queue is empty. If it is not, we increment the head and return the value of the item pointed to (this works nicely because, as mentioned earlier, head points one behind the actual head).
+
+Consider the example sequence that illustrates usage of an array-implemented queue:
+
+TODO add example
 

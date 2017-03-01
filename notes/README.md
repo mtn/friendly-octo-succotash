@@ -17,4 +17,10 @@ Source files are grouped by book and chapter, with each chapter having a `*.adoc
 
     asciidoctor-pdf index.adoc -D ../ -o BOOK_NAME.pdf
 
-within the appropriate source directory. Alternatively (easier), execute ./build.sh within the appropriate source directory
+within the appropriate source directory.
+
+Alternatively (much easier), execute
+
+    ./build.sh
+
+within the appropriate source directory
