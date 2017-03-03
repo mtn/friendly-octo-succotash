@@ -60,5 +60,23 @@ The number of comparisons we make decreases by 1 each pass. In the first pass, w
 
 === 1.2 Sorting an Array: Insertion Sort
 
-Consider the same array as above. We can also sort it by iterating through the array, placing a num in its correct location in our sorted array at each step.
+Consider the same array as above. We can also sort it by iterating through the array, placing a number in the correct location within our sorted array at each step. In practice, this means iterating through the array, moving each index into the spot above and stopping once we've found the correct spot:
+
+[source]
+----
+void insertionSort(int list[], int n){
+// Sorts first n items (list[0]..list[n-1])
+    for(int i = 1; i < n; ++i){
+        int key = list[h];
+        int k = h-1;
+        while(k >= 0 && key < list[k]){
+            list[k+1] = list[k];
+            --k;
+        }
+        list[k+1] = key;
+    }
+}
+----
+
+We exit the while loop when `k` is no
 
