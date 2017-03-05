@@ -14,7 +14,7 @@ Often, we'll want to implement a _bounded_ priority queue. In this case, we'll n
 * Using an unordered array of length `max_capacity`. Insertion is `O(1)`, but both `pq_peek` and `pq_rem` are `O(n)` because we have to scan over all values (and then swap it with the last value in the array and decrement `n`).
 * Using an ordered array. Insertion is `O(n)`, because while we can find the spot to insert in `O(log n)`, we then have to shift items which is of the order `O(n)`. Finding the highest priority element is `O(1)`, and we can arrange the array so that the highest-priority element goes at the end to have deletion be `O(1)`.
 * Using an AVL tree. Based on the AVL height invariant, we know that insertion will always be `O(log n)`. Deletion will also be `O(log n)`.
-* Using a heap, where `pq_add` and `pq_rem` are on the same order as AVL trees but `pq_peek` can be done in constant time.
+* Using a heap, where `pq_add` and `pq_rem` are on the same order as AVL trees but `pq_peek` can be done in constant time (because we just have to look at the root, with no restoring of invariants required).
 
 .Operation Complexities
 |===
@@ -41,6 +41,8 @@ Often, we'll want to implement a _bounded_ priority queue. In this case, we'll n
 |`O(1)`
 |===
 
+When evaluating data structure options, we generally consider the complexity of running `n` insertions and deletions (because this is typically what we'll do with priority queues). A heap is more efficient in these operations than arrays: `O(2nlog(n))` -> `O(nlogn)`vs. `O(2n^2)` -> `O(n^2)`.
+
 *Min-heaps*
 
 Min-heaps have the structure of binary trees, but with special properties. The key is the min-heap _ordering invariant_: the key of each node must always be less-than-or-equal-to the key of its children. Based on this property, we know that for any min-heap we can find the minimal element at the root of the tree (thus, `O(1)`).
@@ -53,7 +55,7 @@ Based on the shape invariant, we know where to insert a new node. However, we do
 
 *Removing the Minimal Element*
 
-We obviously can't just delete the root element and be done, because we won't have any tree left. Instead, we swap the last node with the root and then delete the new last node. This violates the ordering invariant (except in a limited number of small cases), however, so we need to resolve this. To do so, we examine the children of the root node and (if they are smaller than it) we swap the node with its _smaller_ child.By choosing the smaller child, we ensure that the new parent will be smaller than both its new children (its previous child and the sibling it was previously smaller than). This operation is called _sifting down_, and we repeat it until the ordering invariant is satisfied or we reach a leaf.
+We obviously can't just delete the root element and be done, because we won't have any tree left. Instead, we swap the last node with the root and then delete the new last node. This violates the ordering invariant (except in a limited number of small cases), however, so we need to resolve this. To do so, we examine the children of the root node and (if they are smaller than it) we swap the node with its _smaller_ child. By choosing the smaller child, we ensure that the new parent will be smaller than both its new children (its previous child and the sibling it was previously smaller than). This operation is called _sifting down_, and we repeat it until the ordering invariant is satisfied or we reach a leaf.
 
 *Representing Heaps as Arrays*
 
@@ -306,7 +308,7 @@ void siftDown(heap H)
     int i = 1;
 
     // while there is a left child...
-    while(2*i < Heap->next)
+    while(2*i < H->next)
     //@loop_invariant 1 <= i && i < H->next;
     //@loop_invariant isHeapExceptDown(H,i);
     //@loop_invariant grandparentCheck(H,i);

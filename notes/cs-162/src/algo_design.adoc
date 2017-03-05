@@ -1,0 +1,8 @@
+=== Algorithm Design Techniques
+
+* Greedy
+* Divide and Conquer
+* Dynamic Programming
+* Backtracking
+* Divide problem into many subproblems
+
