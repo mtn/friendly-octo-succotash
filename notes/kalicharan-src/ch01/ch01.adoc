@@ -78,5 +78,66 @@ void insertionSort(int list[], int n){
 }
 ----
 
-We exit the while loop when `k` is no
+We exit the while loop when `k` and assign the key to its final location when it is no longer less than the element before.
+
+*Algorithm analysis: Insertion Sort*
+
+For each item `j` we consider, we make between 1 and `j-1` comparisons. Therefore, on average we expect to make `(1/2)(j-1)` comparisons per item on random data. This results in a runtime on the order of `O(n^2)`. Note that performance can vary depending on the nature of the data; sorting requires `n-1` comparisons in the best case, `(1/4)n^2` on average, and `(1/2)n^2` in the worst case.
+
+=== 1.3 Inserting an Element in Place
+
+The pattern of inserting an element into a sorted (sub)list as we do in insertion sort is fairly common. We can abstract this idea into a function `insertInPlace`. We assume that the array has enough place to hold the new element.
+
+[source]
+----
+void insertInPlace(int newItem, int list[], int m, int n){
+// list[m..n] is sorted
+// after insertion, list[m..n+1] will be sorted
+    int k = n;
+    while(k >= m && newItem < list[k]){
+        list[k+1] = list[k];
+        --k;
+    }
+    list[k+1] = newItem;
+}
+----
+
+=== 1.6 Binary Search
+
+Binary search is a fast searching method that relies upon the list being sorted. Throughout execution, we maintain a known subset where we know the element must exist, if it exists in the array. This contiguous space is called the _search space_, and we progress towards finding the element/termination by shrinking our search space in each iteration.
+
+[source]
+----
+int binarySearch(int key, int list[], int lo, int hi){
+    while(lo <= hi){
+        int mid = (lo+hi)/2;
+        if(key == list[mid]) return mid;
+        if(key < list[mid]) hi = mid-1;
+        else lo = mid+1;
+    }
+    return -1; // key wasn't found
+}
+----
+
+=== 1.9 Merging Ordered Lists
+
+Sorted lists can be merged by repeatedly taking the smallest head of the arrays being merged. This merging process can also be seen in _merge sort_.
+
+[source]
+----
+int merge(int A[], int m, int B[], int n, int C[]){
+    int i = 0, j = 0, k = -1;
+    while(i < m && j < n){
+        if(A[i] < B[j]) C[++k] = B[i++];
+        else C[++k] = B[j++];
+    }
+    if(i == m)
+        for( ; j < n; j++) C[++k] = B[j];
+    else
+        for( ; i < m; i++) C[++k] = A[i++];
+    return m + n;
+}
+----
+
+As long as we have more elements to process in both arrays, we enter the loop. When this is no longer the case, we insert all the extra elements from the larger array directly.
 
