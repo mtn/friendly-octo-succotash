@@ -219,7 +219,7 @@ Consider the example sequence that illustrates usage of an array-implemented que
 1) We insert the values 5 8 1 9 (where 5 is inserted first). Head is 0, tail is 4 (incremented 1 for each insertion).
 2) We call dequeue, which returns 5. Head is incremented to 1.
 
-*Implementing a Queue Using an Array*
+*Implementing a Queue Using an Linked List*
 
 As usual, the advantage of implementing with a linked list is that we don't have to know the size of our structure beforehand. Two pointers point to the first and last nodes in the queue struct (each node contains queue data and a pointer to the next). The typedefs thus look as follows:
 
