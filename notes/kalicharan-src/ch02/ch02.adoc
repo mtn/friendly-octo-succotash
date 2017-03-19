@@ -1,0 +1,30 @@
+== 2 Structures
+
+What a structure is, how they are declared, typedef, etc.
+
+=== 2.1. Defining Structures
+
+A structure is a collection of some number of variables, not necessarily of the same type.
+
+=== 2.2 How to Declare a Structure
+
+Consider the fields required to store a data: day, month, and year. A `struct` to hold these pieces of information could be declared as follows:
+
+[source]
+----
+struct date {int day,month,year;};
+----
+
+The keyword `struct` is followed by the name given to the structure (date). Alternatively, we can declare each field separately.
+
+[source]
+----
+struct date{
+    int day;
+    int month;
+    int year;
+};
+----
+
+Especially when the types field data vary, the second option is much clearer.
+
