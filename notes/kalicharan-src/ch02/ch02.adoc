@@ -26,5 +26,69 @@ struct date{
 };
 ----
 
-Especially when the types field data vary, the second option is much clearer.
+Especially when the types field data vary, the second option is much clearer. We declare variables of type `struct date` as follows:
+
+[source]
+----
+struct date dob;
+----
+
+And refer to it's fields as `dob.day`, `dob.month`, `dob.year`.
+
+*2.2.1 typedef*
+
+`typedef` is used to give a name to an existing type, which can be used to declare variables of that type. For a `struct`:
+
+[source]
+----
+typedef struct date{
+    int day;
+    int month;
+    int year;
+} Date;
+----
+
+And our variable declaration would then be `Date dob`. We can also omit the struct name:
+
+[source]
+----
+typedef struct {
+    int day;
+    int month;
+    int year;
+} Date;
+----
+
+As a simple example of a struct that holds different data types, let's suppose we want to store the first 3 letters of a month rather than its index:
+
+[source]
+----
+typedef struct {
+    int day;
+    char month[4];
+    int year;
+} Date;
+----
+
+To initialize a `Date` variable representing November 14, 2013:
+
+[source]
+----
+dob.day=14;
+strcpy(dob.month,"Nov");
+dob.year=2013;
+----
+
+=== 2.7 Nested Structures
+
+We can define structures within structures, _nested_ structures. Consider a struct that stores information about students where we keep track of date of birth:
+
+[source]
+----
+typedef struct{
+    char name[31]; // names assumed to be <= 31 characters
+    Date dob;
+    char gender;
+} Student;
+----
 
